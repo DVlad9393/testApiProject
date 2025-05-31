@@ -14,7 +14,7 @@ class UserResponse(BaseModel):
     support: dict
 
 @allure.title("Проверка получения пользователя по id")
-def test_get_user(base_url):
+def test_get_user(base_url: str) -> None:
     user_id = 1
     with allure.step(f"GET /api/users/{user_id}"):
         response = httpx.get(f"{base_url}/api/users/{user_id}")

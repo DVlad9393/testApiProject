@@ -1,7 +1,0 @@
-fastapi~=0.115.12
-uvicorn~=0.23.2
-pydantic~=2.11.4
-pytest~=8.3.5
-httpx~=0.28.1
-allure-pytest
-allure-python-commons~=2.14.2
