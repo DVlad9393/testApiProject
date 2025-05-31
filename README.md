@@ -6,7 +6,10 @@
 
 1. Установить зависимости:
     ```
-    pip install -r requirements.txt
+    pip install poetry
+    poetry lock (если проблемы с актуальностью в папке poetry.lock)
+    poetry install
+    poetry env activate (для активации виртуального окружения)
     ```
 2. Запустить сервер:
     ```

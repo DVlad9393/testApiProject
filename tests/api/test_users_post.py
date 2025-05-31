@@ -10,7 +10,7 @@ class UserData(BaseModel):
     avatar: str
 
 @allure.title("Проверка создания нового пользователя")
-def test_create_user(base_url):
+def test_create_user(base_url: str) -> None:
     payload = {
         "id": 999,
         "email": "test@example.com",
