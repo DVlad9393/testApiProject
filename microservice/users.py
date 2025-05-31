@@ -21,5 +21,5 @@ def create_user(user: UserData) -> UserData:
     return user
 
 @router.get("/api/users/", response_model=Dict[int, UserData])
-def list_users():
+def list_users() -> Dict[int, UserData]:
     return users_db
