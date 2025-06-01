@@ -1,7 +1,13 @@
-import pytest
+import os
 
-BASE_URL = "http://127.0.0.1:8000"
+import pytest
+import dotenv
+dotenv.load_dotenv()
+
+@pytest.fixture(autouse=True)
+def envs():
+    dotenv.load_dotenv()
 
 @pytest.fixture(scope="session")
 def base_url():
-    return BASE_URL
+    return os.getenv('BASE_URL')

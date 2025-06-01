@@ -13,7 +13,7 @@
     ```
 2. Запустить сервер:
     ```
-    uvicorn microservice.main:app --reload
+    poetry run uvicorn microservice.main:app --reload
     ```
 
 ## Эндпоинты
@@ -34,4 +34,7 @@
 
 Запуск тестов
 
-pytest --alluredir=allure-results
+poetry run pytest --alluredir=allure-results
+
+Запуск тестов с удалением предыдущих результатов
+rm -rf allure-results && poetry run pytest -s --alluredir=allure-results

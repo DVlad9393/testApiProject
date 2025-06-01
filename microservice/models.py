@@ -1,16 +1,19 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr, HttpUrl
 
 class UserData(BaseModel):
     id: int
-    email: str
+    email: EmailStr
     first_name: str
     last_name: str
-    avatar: str
+    avatar: HttpUrl
 
 class SupportData(BaseModel):
-    url: str
+    url: HttpUrl
     text: str
 
 class UserResponse(BaseModel):
     data: UserData
     support: SupportData
+
+class AppStatus(BaseModel):
+    users: bool

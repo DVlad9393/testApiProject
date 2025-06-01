@@ -1,13 +1,8 @@
+from http import HTTPStatus
+
 import httpx
 import allure
-from pydantic import BaseModel
-
-class UserData(BaseModel):
-    id: int
-    email: str
-    first_name: str
-    last_name: str
-    avatar: str
+from microservice.models import UserData, UserResponse
 
 @allure.title("Проверка создания нового пользователя")
 def test_create_user(base_url: str) -> None:
@@ -20,6 +15,8 @@ def test_create_user(base_url: str) -> None:
     }
     with allure.step("POST /api/users/"):
         response = httpx.post(f"{base_url}/api/users/", json=payload)
-        assert response.status_code == 200, response.text
+        assert response.status_code == HTTPStatus.OK, response.text
+        user = response.json()
+        UserData.model_validate(user)
         user_data = UserData(**response.json())
         assert user_data.email == "test@example.com"
