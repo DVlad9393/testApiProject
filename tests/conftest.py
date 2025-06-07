@@ -1,5 +1,5 @@
 import os
-
+from microservice.db import users_db
 import pytest
 import dotenv
 dotenv.load_dotenv()
@@ -11,3 +11,7 @@ def envs():
 @pytest.fixture(scope="session")
 def base_url():
     return os.getenv('BASE_URL')
+
+@pytest.fixture(scope="session")
+def total_users():
+    return len(users_db)

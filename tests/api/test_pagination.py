@@ -1,24 +1,41 @@
 from http import HTTPStatus
 
+from microservice.db import users_db
+from tests.utils import gen_size_page_params
 import httpx
 import allure
 import pytest
+import math
 
-@allure.title("Проверка количества объектов на странице")
-def test_pagination_total_count(base_url: str):
-    response = httpx.get(f"{base_url}/api/users/?page=1&size=20")
+
+@pytest.mark.parametrize("size,page", gen_size_page_params(len(users_db), [1, 3, 7, 10, 20]))
+@allure.title("Проверка количества объектов на странице при size={size} и page={page}")
+def test_pagination_total_count(base_url: str, size: int, page: int, total_users):
+    total_pages = math.ceil(total_users / size)
+    response = httpx.get(f"{base_url}/api/users/?page={page}&size={size}")
     assert response.status_code == HTTPStatus.OK
     data = response.json()
-    assert data['total'] == 20
-    assert len(data['items']) == 20
 
-@allure.title("Проверка подсчета pages при разных значениях size")
-@pytest.mark.parametrize("size,expected_pages", [(5, 4),(8, 3),(3, 7),])
-def test_pagination_pages_count(base_url: str, size: int, expected_pages: int):
-    response = httpx.get(f"{base_url}/api/users/?page=1&size={size}")
-    assert response.status_code == HTTPStatus.OK
-    data = response.json()
-    assert data['pages'] == expected_pages
+    start = (page - 1) * size
+    end = min(page * size, total_users)
+    expected_items = end - start
+
+    assert isinstance(data['items'], list)
+    assert data['total'] == total_users
+    assert data['page'] == page
+    assert data['size'] == size
+    assert data['pages'] == total_pages
+    assert len(data['items']) == expected_items
+
+@pytest.mark.parametrize("size", [5, 8, 3])
+@allure.title("Проверка количества страниц в пагинации на каждой странице для size={size}")
+def test_pagination_pages_count_all_pages(base_url: str, size: int, total_users: int):
+    expected_pages = math.ceil(total_users / size)
+    for page in range(1, expected_pages + 1):
+        response = httpx.get(f"{base_url}/api/users/?page={page}&size={size}")
+        assert response.status_code == HTTPStatus.OK
+        data = response.json()
+        assert data['pages'] == expected_pages
 
 @allure.title("Проверка возвращения  разных объектов на разных страницах")
 def test_pagination_page_switch(base_url: str):
