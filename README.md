@@ -38,3 +38,9 @@ poetry run pytest --alluredir=allure-results
 
 Запуск тестов с удалением предыдущих результатов
 rm -rf allure-results && poetry run pytest -s --alluredir=allure-results
+
+Запуск docker 
+docker compose up -d 
+
+Отключение docker
+docker compose down
