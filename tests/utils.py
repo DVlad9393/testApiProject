@@ -1,29 +1,15 @@
 import math
 
-def gen_size_page_params(total_users, sizes: list[int]) -> list[tuple[int, int]]:
+from microservice.database.users import get_users_from_db
+
+def get_total_pages(size: int) -> int:
     """
-        Генерирует пары (size, page) для параметризации тестов пагинации.
+    Возвращает количество страниц для пагинации при заданном размере страницы.
 
-        Для заданного количества сущностей (например, пользователей) возвращает список кортежей,
-        где каждый кортеж содержит размер страницы и номер страницы, которые можно использовать
-        для параметризации тестов.
-
-        Параметры:
-            total_users (int): Общее количество сущностей (например, пользователей) в коллекции.
-            sizes (List[int]): Список различных размеров страниц.
-
-        Возвращает:
-            List[Tuple[int, int]]: Список всех валидных пар (size, page) для указанных размеров страниц:
-                [1, 3, 7, 10, 20]. Для каждого размера страницы вычисляется возможное количество страниц.
-
-        Пример:
-            >>> gen_size_page_params(8)
-            [(1, 1), (1, 2), ..., (1, 8), (3, 1), (3, 2), (3, 3), (7, 1), (7, 2), (10, 1)]
-        """
-    sizes = sizes
-    params = []
-    for size in sizes:
-        total_pages = math.ceil(total_users / size)
-        for page in range(1, total_pages + 1):
-            params.append((size, page))
-    return params
+    :param size: Количество элементов на странице.
+    :return: Общее количество страниц.
+    """
+    total_users = sum(1 for _ in get_users_from_db())
+    if size <= 0:
+        return 0
+    return math.ceil(total_users / size)
