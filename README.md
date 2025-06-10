@@ -36,11 +36,14 @@
 
 poetry run pytest --alluredir=allure-results
 
-Запуск тестов с удалением предыдущих результатов
+Запуск тестов снаружи (вне контейнера) с удалением предыдущих результатов (по умолчанию)
+cp .env.local .env
 rm -rf allure-results && poetry run pytest -s --alluredir=allure-results
 
-Запуск docker 
-docker compose up -d 
+Запуск docker compose
+docker compose up -d (без сборки)
+docker compose up --build
 
-Отключение docker
+Отключение docker compose
 docker compose down
+
