@@ -58,6 +58,12 @@ jobs:
         run: |
           docker compose up -d --build
 
+      - name: Wait for Postgres
+        run: |
+          for i in {1..10}; do
+            pg_isready -h db -p 5432 && break || sleep 2
+          done
+
       - name: Run tests and collect Allure results
         run: |
           rm -rf allure-results && poetry run pytest -s --alluredir=allure-results
