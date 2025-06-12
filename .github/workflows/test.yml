@@ -16,6 +16,8 @@ jobs:
       DATABASE_POOL_SIZE: ${{ secrets.DATABASE_POOL_SIZE}}
 
     steps:
+      - uses: actions/checkout@v4
+
       - name: Create .env from secrets
         run: |
           echo "BASE_URL=${{ secrets.BASE_URL }}" > .env
@@ -24,7 +26,9 @@ jobs:
           echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
           echo "DATABASE_POOL_SIZE=${{ secrets.DATABASE_POOL_SIZE }}" >> .env
 
-      - uses: actions/checkout@v4
+      - name: Print .env for debug
+        run: cat .env
+
       - name: Set up Python 3.13
         uses: actions/setup-python@v5
         with:
@@ -57,4 +61,4 @@ jobs:
       - name: Docker-compose logs
         run: |
           docker-compose logs app
-          if: always()
+        if: always()
