@@ -1,4 +1,3 @@
-
 on:
   pull_request:
     branches:
@@ -26,9 +25,6 @@ jobs:
           echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
           echo "DATABASE_POOL_SIZE=${{ secrets.DATABASE_POOL_SIZE }}" >> .env
 
-      - name: Print .env for debug
-        run: cat .env
-
       - name: Set up Python 3.13
         uses: actions/setup-python@v5
         with:
@@ -50,15 +46,37 @@ jobs:
         run: |
           poetry install --no-interaction --no-ansi
 
+      - name: Install Allure
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y openjdk-17-jre
+          wget https://github.com/allure-framework/allure2/releases/latest/download/allure-2.27.0.tgz
+          tar -xzf allure-2.27.0.tgz
+          sudo mv allure-2.27.0/bin/allure /usr/local/bin/allure
+          allure --version
+
       - name: Run docker-compose
         run: |
           docker compose up -d --build
 
-      - name: Run tests
+      - name: Run tests and collect Allure results
         run: |
-          poetry run pytest
+          rm -rf allure-results
+          poetry run pytest --alluredir=allure-results
+
+      - name: Generate Allure report
+        run: |
+          allure generate allure-results --clean -o allure-report
 
       - name: Docker-compose logs
+        if: always()
         run: |
           docker compose logs api
+
+      - name: Publish Allure Report to GitHub Pages
         if: always()
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./allure-report
+          publish_branch: gh-pages
