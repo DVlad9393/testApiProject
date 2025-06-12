@@ -60,5 +60,5 @@ jobs:
 
       - name: Docker-compose logs
         run: |
-          docker-compose logs app
+          docker compose logs app
         if: always()
