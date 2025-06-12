@@ -46,11 +46,12 @@ jobs:
         run: |
           poetry install --no-interaction --no-ansi
 
-      - name: Install Allure
+      - name: Install Allure CLI
         run: |
           wget https://github.com/allure-framework/allure2/releases/download/2.34.0/allure-2.34.0.tgz
           tar -xzf allure-2.34.0.tgz
-          sudo mv allure-2.34.0/bin/allure /usr/local/bin/allure
+          sudo mv allure-2.34.0 /opt/allure
+          sudo ln -s /opt/allure/bin/allure /usr/local/bin/allure
           allure --version
 
       - name: Run docker-compose
