@@ -48,11 +48,9 @@ jobs:
 
       - name: Install Allure
         run: |
-          sudo apt-get update
-          sudo apt-get install -y openjdk-17-jre
-          wget https://github.com/allure-framework/allure2/releases/latest/download/allure-2.27.0.tgz
-          tar -xzf allure-2.27.0.tgz
-          sudo mv allure-2.27.0/bin/allure /usr/local/bin/allure
+          wget https://github.com/allure-framework/allure2/releases/download/2.34.0/allure-2.34.0.tgz
+          tar -xzf allure-2.34.0.tgz
+          sudo mv allure-2.34.0/bin/allure /usr/local/bin/allure
           allure --version
 
       - name: Run docker-compose
