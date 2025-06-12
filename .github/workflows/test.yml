@@ -60,8 +60,7 @@ jobs:
 
       - name: Run tests and collect Allure results
         run: |
-          rm -rf allure-results
-          poetry run pytest --alluredir=allure-results
+          rm -rf allure-results && poetry run pytest -s --alluredir=allure-results
 
       - name: Generate Allure report
         run: |
