@@ -1,23 +1,35 @@
 from http import HTTPStatus
 
-import httpx
 import allure
 import pytest
 
 from microservice.models.User import UserData
+from tests.api.user_api_client import UsersApiClient
 
 @pytest.fixture
-def users(base_url: str) -> dict[int, UserData]:
+def users(users_api_client: UsersApiClient) -> dict[int, UserData]:
+    """
+        Фикстура для получения всех пользователей через API клиента.
+
+        Выполняет запрос к ручке получения всех пользователей с помощью UsersApiClient,
+        валидирует статус-код ответа и возвращает словарь, в котором ключ — id пользователя,
+        а значение — объект пользователя в виде dict.
+
+        Returns:
+            dict[int, UserData]: Маппинг user_id -> user (dict с данными пользователя),
+                                 полученный из ответа API.
+        """
     with allure.step("GET /api/users/"):
-        response = httpx.get(f"{base_url}/api/users/")
+        response = users_api_client.get_all_users()
         assert response.status_code == HTTPStatus.OK
-        return response.json()
+        data = response.json()
+        return {user['id']: user for user in data.get("items", [])}
 
 @pytest.mark.usefixtures("fill_test_data")
 @allure.title("Проверка получения всех пользователей")
-def test_get_all_users(base_url: str) -> None:
+def test_get_all_users(users_api_client: UsersApiClient) -> None:
     with allure.step("GET /api/users/"):
-        response = httpx.get(f"{base_url}/api/users/")
+        response = users_api_client.get_all_users()
         assert response.status_code == HTTPStatus.OK
         data = response.json()
         assert isinstance(data, dict)

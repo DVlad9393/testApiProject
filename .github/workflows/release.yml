@@ -25,6 +25,27 @@ jobs:
           echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
           echo "DATABASE_POOL_SIZE=${{ secrets.DATABASE_POOL_SIZE }}" >> .env
 
+      - name: Create .env files for all test environments
+        run: |
+          mkdir -p test_env
+          echo "BASE_URL=${{ secrets.BASE_URL }}" > test_env/.env.dev
+          echo "DATABASE_ENGINE=${{ secrets.DATABASE_ENGINE }}" >> test_env/.env.dev
+          echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> test_env/.env.dev
+          echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> test_env/.env.dev
+          echo "DATABASE_POOL_SIZE=${{ secrets.DATABASE_POOL_SIZE }}" >> test_env/.env.dev
+      
+          echo "BASE_URL=${{ secrets.BASE_URL }}" > test_env/.env.stage
+          echo "DATABASE_ENGINE=${{ secrets.DATABASE_ENGINE }}" >> test_env/.env.stage
+          echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> test_env/.env.stage
+          echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> test_env/.env.stage
+          echo "DATABASE_POOL_SIZE=${{ secrets.DATABASE_POOL_SIZE }}" >> test_env/.env.stage
+      
+          echo "BASE_URL=${{ secrets.BASE_URL }}" > test_env/.env.prod
+          echo "DATABASE_ENGINE=${{ secrets.DATABASE_ENGINE }}" >> test_env/.env.prod
+          echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> test_env/.env.prod
+          echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> test_env/.env.prod
+          echo "DATABASE_POOL_SIZE=${{ secrets.DATABASE_POOL_SIZE }}" >> test_env/.env.prod
+
       - name: Set up Python 3.13
         uses: actions/setup-python@v5
         with:
@@ -64,13 +85,19 @@ jobs:
             pg_isready -h db -p 5432 && break || sleep 2
           done
 
-      - name: Run tests and collect Allure results
+      - name: Run tests and generate Allure reports for all environments
         run: |
-          rm -rf allure-results && poetry run pytest -s --alluredir=allure-results
+          for env in dev stage prod; do
+            poetry run pytest --env=$env --alluredir=allure-results-$env
+            allure generate allure-results-$env --clean -o allure-report-$env
+          done
 
-      - name: Generate Allure report
+      - name: Prepare Allure reports for all environments
         run: |
-          allure generate allure-results --clean -o allure-report
+          mkdir -p allure-multi-report
+          mv allure-report-dev allure-multi-report/dev
+          mv allure-report-stage allure-multi-report/stage
+          mv allure-report-prod allure-multi-report/prod    
 
       - name: Docker-compose logs
         if: always()
@@ -82,7 +109,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./allure-report
+          publish_dir: ./allure-multi-report
           publish_branch: gh-pages
 
   release:

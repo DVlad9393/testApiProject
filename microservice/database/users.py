@@ -4,7 +4,7 @@ from typing import Iterable
 from pydantic import EmailStr
 from sqlmodel import Session, select
 
-from .engine import engine
+from .engine import get_engine
 from ..models.User import UserData, UserUpdate, UserCreate
 
 
@@ -18,7 +18,7 @@ def get_user_from_db_by_id(user_id: int) -> UserData | None:
         Returns:
             UserData | None: Объект пользователя, если найден, иначе None.
         """
-    with Session(engine) as session:
+    with Session(get_engine()) as session:
         user = session.get(UserData, user_id)
         return user
 
@@ -32,7 +32,7 @@ def get_user_from_db_by_email(email: EmailStr) -> UserData | None:
         Returns:
             UserData | None: Объект пользователя, если найден, иначе None.
         """
-    with Session(engine) as session:
+    with Session(get_engine()) as session:
         statement = select(UserData).where(UserData.email == email)
         user = session.exec(statement).first()
         return user
@@ -44,7 +44,7 @@ def get_users_from_db() -> Iterable[UserData]:
         Returns:
             Iterable[UserData]: Список всех пользователей.
         """
-    with Session(engine) as session:
+    with Session(get_engine()) as session:
         statement = select(UserData)
         users = session.exec(statement).all()
         return users
@@ -61,9 +61,8 @@ def create_user(user: UserCreate) -> UserData:
         """
     if get_user_from_db_by_email(user.email):
         raise HTTPException(status_code=400, detail="User already exists")
-        # Используй mode="json", чтобы преобразовать все поля (включая HttpUrl) к строкам
     new_user = UserData(**user.model_dump(mode="json"))
-    with Session(engine) as session:
+    with Session(get_engine()) as session:
         session.add(new_user)
         session.commit()
         session.refresh(new_user)
@@ -83,7 +82,7 @@ def update_user(user_id: int, user: UserUpdate) -> type[UserData]:
     Raises:
         HTTPException: 404, если пользователь не найден.
     """
-    with Session(engine) as session:
+    with Session(get_engine()) as session:
         user_db = session.get(UserData, user_id)
         if user_db is None:
             raise HTTPException(status_code=404, detail="User not found")
@@ -107,7 +106,7 @@ def delete_user(user_id: int) -> None:
         Примечания:
             - Если пользователя с таким id нет, будет сгенерирована ошибка SQLAlchemy.
         """
-    with Session(engine) as session:
+    with Session(get_engine()) as session:
         user = session.get(UserData, user_id)
         if user is None:
             raise HTTPException(status_code=404, detail="User not found")
