@@ -1,6 +1,7 @@
-import httpx
 from http import HTTPStatus
 import allure
+
+from tests.api.user_api_client import UsersApiClient
 
 BASE_PAYLOAD = {
     "email": "valid@example.com",
@@ -10,16 +11,16 @@ BASE_PAYLOAD = {
 }
 
 @allure.title("Пользовательский флоу: создать, прочитать, обновить, удалить")
-def test_user_flow_crud(base_url):
-    resp = httpx.post(f"{base_url}/api/users/", json=BASE_PAYLOAD)
+def test_user_flow_crud(users_api_client: UsersApiClient):
+    resp = users_api_client.create_user(BASE_PAYLOAD)
     assert resp.status_code == HTTPStatus.CREATED
     user = resp.json()
     user_id = user["id"]
-    resp = httpx.get(f"{base_url}/api/users/{user_id}")
+    resp = users_api_client.get_user(user_id)
     assert resp.status_code == HTTPStatus.OK
     update = dict(BASE_PAYLOAD, first_name="Updated")
-    resp = httpx.patch(f"{base_url}/api/users/{user_id}", json=update)
+    resp = users_api_client.update_user(user_id, update)
     assert resp.status_code == HTTPStatus.OK
     assert resp.json()["first_name"] == "Updated"
-    resp = httpx.delete(f"{base_url}/api/users/{user_id}")
+    resp = users_api_client.delete_user(user_id)
     assert resp.status_code == HTTPStatus.OK

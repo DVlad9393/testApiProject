@@ -11,9 +11,14 @@
     poetry install
     poetry env activate (для активации виртуального окружения)
     ```
-2. Запустить сервер:
-    ```
-    poetry run uvicorn microservice.main:app --reload
+   2. Запустить сервер в контейнере:
+       ```
+       Запуск docker compose
+      docker compose up -d (без сборки)
+      docker compose up --build
+
+      Отключение docker compose
+      docker compose down
     ```
 
 ## Эндпоинты
@@ -40,10 +45,9 @@ poetry run pytest --alluredir=allure-results
 cp .env.local .env
 rm -rf allure-results && poetry run pytest -s --alluredir=allure-results
 
-Запуск docker compose
-docker compose up -d (без сборки)
-docker compose up --build
+Запуск тестов снаружи (вне контейнера) с сохранением предыдущих результатов через переменную окружения dev
+rm -rf allure-results && poetry run pytest --env=dev -s --alluredir=allure-results
 
-Отключение docker compose
-docker compose down
+
+в
 
