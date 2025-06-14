@@ -11,14 +11,14 @@
     poetry install
     poetry env activate (для активации виртуального окружения)
     ```
-   2. Запустить сервер в контейнере (предварительно установить docker):
-       ```
-      Запуск docker compose
-      docker compose up -d (без сборки)
-      docker compose up --build
+2. Запустить сервер в контейнере (предварительно установить docker):
+    ```
+    Запуск docker compose
+    docker compose up -d (без сборки)
+    docker compose up --build
 
-      Отключение docker compose
-      docker compose down
+    Отключение docker compose
+    docker compose down
     ```
 
 ## Эндпоинты
