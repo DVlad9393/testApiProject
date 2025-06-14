@@ -1,6 +1,7 @@
 import os
 import pytest
 import dotenv
+from .test_fixtures import *
 
 ENV_TO_DOTENV = {
     "dev": "test_env/.env.dev",
