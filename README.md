@@ -11,9 +11,9 @@
     poetry install
     poetry env activate (для активации виртуального окружения)
     ```
-   2. Запустить сервер в контейнере:
+   2. Запустить сервер в контейнере (предварительно установить docker):
        ```
-       Запуск docker compose
+      Запуск docker compose
       docker compose up -d (без сборки)
       docker compose up --build
 
@@ -26,16 +26,18 @@
 - `GET /api/users/{user_id}` — получить пользователя по id.
 - `POST /api/users/` — создать пользователя.
 - `GET /api/users/` — получить всех пользователей.
+- `PUT /api/users/{user_id}` — обновить пользователя по id.
+- `DELETE /api/users/{user_id}` — удалить пользователя по id.
+- `GET /api/status/` — получить статус сервера.
 
 ## Структура проекта
 
-- `main.py` — основной файл проекта.
-- `models.py` — модели данных.
-- `schemas.py` — схемы данных.
-- `utils.py` — утилиты.
-- `db.py` — база данных.
-- 
-Проверить, что сервер запущен можно по адресу http://localhost:8000/docs.
+- `microservice` — FastAPI приложение.
+- `microservice/database` — модуль для работы с базой данных.
+- `microservice/models` — модели данных.
+- `microservice/routers` — маршруты API.
+- `tests` — тесты.
+Проверить, что сервер запущен можно по адресу http://localhost:8002/docs.
 
 Запуск тестов
 
@@ -48,6 +50,7 @@ rm -rf allure-results && poetry run pytest -s --alluredir=allure-results
 Запуск тестов снаружи (вне контейнера) с сохранением предыдущих результатов через переменную окружения dev
 rm -rf allure-results && poetry run pytest --env=dev -s --alluredir=allure-results
 
-
-в
-
+Адреса GitHub Pages с результатами тестов:
+- dev https://dvlad9393.github.io/testApiProject/dev/
+- stage https://dvlad9393.github.io/testApiProject/stage/
+- prod https://dvlad9393.github.io/testApiProject/prod/
