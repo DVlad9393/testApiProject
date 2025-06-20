@@ -3,7 +3,7 @@ from http import HTTPStatus
 import allure
 
 from microservice.models.User import UserData
-from tests.api.user_api_client import UsersApiClient
+from tests.user_api_client import UsersApiClient
 from tests.test_fixtures import user_payload
 
 @allure.title("Проверка создания нового пользователя")

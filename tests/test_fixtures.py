@@ -4,7 +4,7 @@ import pytest
 from http import HTTPStatus
 
 from microservice.models.User import UserCreate
-from tests.api.user_api_client import UsersApiClient
+from tests.user_api_client import UsersApiClient
 
 @pytest.fixture
 def user_payload() -> dict[str, str]:

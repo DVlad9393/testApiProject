@@ -1,7 +1,7 @@
 from http import HTTPStatus
 
 from tests.utils import get_total_pages
-from tests.api.user_api_client import UsersApiClient
+from tests.user_api_client import UsersApiClient
 import allure
 import pytest
 import math

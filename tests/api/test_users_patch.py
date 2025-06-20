@@ -3,7 +3,7 @@ import allure
 import pytest
 
 from microservice.models.User import UserUpdate, UserData
-from tests.api.user_api_client import UsersApiClient
+from tests.user_api_client import UsersApiClient
 from tests.test_fixtures import created_user_parametrized
 
 @pytest.mark.parametrize(

@@ -4,7 +4,7 @@ import allure
 import pytest
 
 from microservice.models.User import UserData
-from tests.api.user_api_client import UsersApiClient
+from tests.user_api_client import UsersApiClient
 
 @pytest.fixture
 def users(users_api_client: UsersApiClient) -> dict[int, UserData]:
