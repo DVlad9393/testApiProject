@@ -2,7 +2,7 @@ from http import HTTPStatus
 
 import allure
 import pytest
-from tests.api.user_api_client import UsersApiClient
+from tests.user_api_client import UsersApiClient
 
 @pytest.mark.smoke
 @allure.title("Проверка доступности сервиса")

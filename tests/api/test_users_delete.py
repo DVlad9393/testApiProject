@@ -1,6 +1,6 @@
 from http import HTTPStatus
 import allure
-from tests.api.user_api_client import UsersApiClient
+from tests.user_api_client import UsersApiClient
 from tests.test_fixtures import created_user
 
 @allure.title("Проверка удаления пользователя (DELETE)")

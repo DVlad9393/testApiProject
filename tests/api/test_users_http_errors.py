@@ -2,7 +2,7 @@ import pytest
 from http import HTTPStatus
 import allure
 
-from tests.api.user_api_client import UsersApiClient
+from tests.user_api_client import UsersApiClient
 
 BASE_PAYLOAD = {
     "email": "valid@example.com",

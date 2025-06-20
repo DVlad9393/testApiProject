@@ -1,5 +1,4 @@
 import os
-import pytest
 import dotenv
 from .test_fixtures import *
 
@@ -62,5 +61,5 @@ def fill_test_data(base_url, engine, load_env):
 
 @pytest.fixture
 def users_api_client(base_url, load_env):
-    from tests.api.user_api_client import UsersApiClient
+    from tests.user_api_client import UsersApiClient
     return UsersApiClient(base_url)
